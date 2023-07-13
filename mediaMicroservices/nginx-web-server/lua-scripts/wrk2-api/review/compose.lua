@@ -4,10 +4,10 @@ if (k8s_suffix == nil) then
   k8s_suffix = ""
 end
 
-local knative_suffix = os.getenv("kn_suffix")
-if (knative_suffix == nil) then
-  knative_suffix = ""
-end
+-- local knative_suffix = os.getenv("kn_suffix")
+-- if (knative_suffix == nil) then
+--   knative_suffix = ""
+-- end
 
 local function _StrIsEmpty(s)
   return s == nil or s == ''
@@ -44,7 +44,7 @@ local function _UploadUniqueId(req_id, carrier)
   local GenericObjectPool = require "GenericObjectPool"
   local UniqueIdServiceClient = require 'media_service_UniqueIdService'
   local unique_id_client = GenericObjectPool:connection(
-    UniqueIdServiceClient,"unique-id-service" .. knative_suffix, 7070)
+    UniqueIdServiceClient,"unique-id-service" .. ".default.192.168.1.240.sslip.io", 7070)
   unique_id_client:UploadUniqueId(req_id, carrier)
   GenericObjectPool:returnConnection(unique_id_client)
 end
