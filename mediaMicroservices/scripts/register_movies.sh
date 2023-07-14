@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+local movie_title=
+
 for i in {1..1000}; do
   curl -d "title=title_"$i"&movie_id=movie_id_"$i \
       http://127.0.0.1:8080/wrk2-api/movie/register

@@ -1,0 +1,14 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: unique-id-service
+spec:
+  template:
+    spec:
+      containers:
+        - image: arnavb25/media-microservice
+          command: ["UniqueIdService"]
+          ports:
+            - name: h2c
+              containerPort: 7070
+      name: unique-id-service
