@@ -43,8 +43,8 @@ end
 local function _UploadUniqueId(req_id, carrier)
   local GenericObjectPool = require "GenericObjectPool"
   local UniqueIdServiceClient = require 'media_service_UniqueIdService'
-  local unique_id_client = GenericObjectPool:connection(
-    UniqueIdServiceClient,"unique-id-service" .. ".default.192.168.1.240.sslip.io", 80)
+  local unique_id_client = GenericObjectPool:httpConnection(
+    UniqueIdServiceClient,"unique-id-service.default.192.168.1.240.sslip.io", 80)
   unique_id_client:UploadUniqueId(req_id, carrier)
   GenericObjectPool:returnConnection(unique_id_client)
 end
