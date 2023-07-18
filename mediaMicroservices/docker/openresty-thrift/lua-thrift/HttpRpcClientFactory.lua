@@ -1,13 +1,9 @@
---
-----Author: xiajun
-----Date: 20151020
-----
-local RpcClient = require "RpcClient"
+local RpcClient = require "HttpRpcClient"
 --local TestServiceClient = require "resty.thrift.thrift-idl.lua_test_TestService"
-local RpcClientFactory = RpcClient:new({
+local HttpRpcClientFactory = HttpRpcClient:new({
 	__type = 'Client'
 })
-function RpcClientFactory:createClient(thriftClient, ip, port)
+function HttpRpcClientFactory:createClient(thriftClient, ip, port)
     local protocol = self:init(ip, port)
     local client = thriftClient:new{
         iprot = protocol,

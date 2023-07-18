@@ -4,6 +4,7 @@
 --
 local Object = require 'Object'
 local RpcClientFactory = require 'RpcClientFactory'
+local HttpRpcClientFactory = require 'HttpRpcClientFactory'
 local ngx = ngx
 local GenericObjectPool = Object:new({
     __type = 'GenericObjectPool',
@@ -12,11 +13,26 @@ local GenericObjectPool = Object:new({
     })
 function GenericObjectPool:init(conf)
 end
---
+
 --从连接池获取rpc客户端
 --ngx nginx容器变量
 --
 function GenericObjectPool:connection(thriftClient,ip,port)
+    local client = RpcClientFactory:createClient(thriftClient,ip,port)
+    return client
+end
+
+function GenericObjectPool:httpConnection(thriftClient, ip, port)
+    local client = HttpRpcClientFactory(thriftClient, ip, port)
+    return client
+end
+
+--
+--
+--从连接池获取rpc客户端
+--ngx nginx容器变量
+--
+function GenericObjectPool:thriftClient(thriftClient,ip,port)
     local client = RpcClientFactory:createClient(thriftClient,ip,port)
     return client
 end
