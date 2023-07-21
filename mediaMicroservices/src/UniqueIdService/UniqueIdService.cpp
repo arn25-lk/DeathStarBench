@@ -17,6 +17,9 @@
 #include <thrift/protocol/TBinaryProtocol.h>
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
+#include <thrift/transport/THttpServer.h>
+#include <thrift/transport/THttpTransport.h>
+#include <thrift/protocol/TJSONProtocol.h> 
 
 #include "../utils.h"
 #include "UniqueIdHandler.h"
@@ -25,6 +28,8 @@ using apache::thrift::server::TThreadedServer;
 using apache::thrift::transport::TServerSocket;
 using apache::thrift::transport::TFramedTransportFactory;
 using apache::thrift::protocol::TBinaryProtocolFactory;
+using apache::thrift::protocol::TJSONProtocolFactory;
+using apache::thrift::transport::THttpServerTransportFactory;
 using namespace media_service;
 
 void sigintHandler(int sig) {
@@ -39,13 +44,19 @@ int main(int argc, char *argv[]) {
   SetUpTracer("config/jaeger-config.yml", "unique-id-service");
 
   json config_json;
-  if (load_config_file("config/service-config.json", &config_json) != 0) {
+  char* value = std::getenv("IS_KN");
+  std::string serviceConfigPath; 
+  if(value != NULL){
+    serviceConfigPath = "config/service-config-kn.json";
+  }else{
+    serviceConfigPath = "config/service-config.json";
+  }
+  if (load_config_file(serviceConfigPath, &config_json) != 0) {
     exit(EXIT_FAILURE);
   }
 
 //  std::string addr = config_json["UniqueIdService"]["addr"];
   int port = config_json["unique-id-service"]["port"];
-
   std::string compose_addr = config_json["compose-review-service"]["addr"];
   int compose_port = config_json["compose-review-service"]["port"];
 
@@ -58,15 +69,30 @@ int main(int argc, char *argv[]) {
   ClientPool<ThriftClient<ComposeReviewServiceClient>> compose_client_pool(
       "compose-review-client", compose_addr, compose_port, 0, 128, 1000);
 
-  TThreadedServer server (
+  if(value != NULL){
+      TThreadedServer server (
+      std::make_shared<UniqueIdServiceProcessor>(
+          std::make_shared<UniqueIdHandler>(
+              &thread_lock, machine_id, &compose_client_pool)),
+      std::make_shared<TServerSocket>("0.0.0.0", port),
+      std::make_shared<THttpServerTransportFactory>(),
+      std::make_shared<TJSONProtocolFactory>()
+    );
+    std::cout << "Starting the unique-id-service HTTP server ..." << std::endl;
+    server.serve();
+  }else{
+      TThreadedServer server (
       std::make_shared<UniqueIdServiceProcessor>(
           std::make_shared<UniqueIdHandler>(
               &thread_lock, machine_id, &compose_client_pool)),
       std::make_shared<TServerSocket>("0.0.0.0", port),
       std::make_shared<TFramedTransportFactory>(),
       std::make_shared<TBinaryProtocolFactory>()
-  );
+    );
+    std::cout << "Starting the unique-id-service server ..." << std::endl;
+    server.serve();
+  }
 
-  std::cout << "Starting the unique-id-service server ..." << std::endl;
-  server.serve();
+
+
 }

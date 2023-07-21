@@ -1,4 +1,4 @@
-local RpcClient = require "HttpRpcClient"
+local HttpRpcClient = require "HttpRpcClient"
 --local TestServiceClient = require "resty.thrift.thrift-idl.lua_test_TestService"
 local HttpRpcClientFactory = HttpRpcClient:new({
 	__type = 'Client'
@@ -11,4 +11,4 @@ function HttpRpcClientFactory:createClient(thriftClient, ip, port)
     }
     return client
 end
-return RpcClientFactory
+return HttpRpcClientFactory

@@ -8,7 +8,7 @@ local TBinaryProtocol = require "TBinaryProtocol"
 local Object = require "Object"
 
 local HttpRpcClient = Object:new({
-	__type = 'RpcClient',
+	__type = 'HttpRpcClient',
 	timeout = 1001,
 	readTimeout = 500
 })
@@ -22,11 +22,12 @@ function HttpRpcClient:init(ip,port)
 	 }
 	socket:setTimeout(self.timeout)
 	local transport = THttpTransport:new{
-		trans = socket
+		trans = socket,
+		isServer = false
 	}
 	local protocol = TBinaryProtocol:new{
 		trans = transport
-        }
+    }
 	transport:open()
 	return protocol;
 end

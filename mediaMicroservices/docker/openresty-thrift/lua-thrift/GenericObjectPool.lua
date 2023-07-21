@@ -23,7 +23,7 @@ function GenericObjectPool:connection(thriftClient,ip,port)
 end
 
 function GenericObjectPool:httpConnection(thriftClient, ip, port)
-    local client = HttpRpcClientFactory(thriftClient, ip, port)
+    local client = HttpRpcClientFactory:createClient(thriftClient, ip, port)
     return client
 end
 
