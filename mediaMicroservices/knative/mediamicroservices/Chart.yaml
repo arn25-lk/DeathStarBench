@@ -10,8 +10,6 @@ dependencies:
     version: 0.1.0
   - name: jaeger
     version: 0.1.0
-  - name: unique-id-service
-    version: 0.1.0
   - name: movie-id-service
     version: 0.1.0
   - name: movie-id-mongodb

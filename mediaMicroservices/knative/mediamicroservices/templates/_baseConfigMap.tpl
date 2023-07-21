@@ -11,5 +11,5 @@ data:
   {{ $configMap.name -}}: |
 {{- tpl ($.Files.Get $filePath) $ | indent 4 -}}
   {{- end }}
-
+  
 {{- end }}

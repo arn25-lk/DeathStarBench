@@ -6,8 +6,9 @@ ports:
 
 type: NodePort 
 container:
-  image: yg397/openresty-thrift
+  image: arnavb25/openresty-thrift
   imageVersion: xenial
+  imagePullPolicy: "Always"
   name: nginx-web-server
   ports:
     - containerPort: 8080

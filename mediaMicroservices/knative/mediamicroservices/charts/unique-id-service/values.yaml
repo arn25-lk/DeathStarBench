@@ -17,5 +17,5 @@ configMaps:
     value: jaeger-config
 
   - name: service-config.json
-    mountPath: /media-microservices/config/service-config.json
+    mountPath: /media-microservices/config/service-config-kn.json
     value: service-config

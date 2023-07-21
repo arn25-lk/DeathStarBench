@@ -7,8 +7,12 @@ spec:
     spec:
       containers:
         - image: arnavb25/media-microservice
+          imagePullPolicy: "Always"
+          env:
+            - name: IS_KN
+              value: "knative"
           command: ["UniqueIdService"]
           ports:
             - name: h2c
-              containerPort: 7070
+              containerPort: 80
       name: unique-id-service
